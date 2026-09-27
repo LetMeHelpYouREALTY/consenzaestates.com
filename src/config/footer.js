@@ -36,6 +36,7 @@ export const footerLists = [
     title: 'Explore',
     items: [
       { title: 'Consenza Estates community', slug: '/consenza-estates' },
+      { title: 'Nearby amenities in Consenza Estates', slug: '/amenities' },
       { title: 'Lennar homes in Consenza Estates', slug: '/lennar-homes' },
       { title: 'Homes for sale in Consenza Estates', slug: '/properties' },
       { title: 'Las Vegas neighborhoods', slug: '/neighborhoods' },

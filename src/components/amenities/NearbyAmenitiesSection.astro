@@ -1,0 +1,57 @@
+---
+import { Container } from '@components/odyssey-theme.js';
+import AmenityMap from './AmenityMap.astro';
+import community from '../../config/community.js';
+
+export interface Props {
+  heading?: string;
+  intro?: string;
+  /** Shorter map on section embeds */
+  compact?: boolean;
+  amenitiesPageHref?: string;
+}
+
+const {
+  heading = `Life Near ${community.name}`,
+  intro = `Explore dining, parks, grocery, healthcare, and everyday essentials around ${community.name} in ${community.city}. Dr. Jan Duffy helps buyers understand what is truly nearby before you tour Lennar homes.`,
+  compact = true,
+  amenitiesPageHref = '/amenities',
+} = Astro.props;
+
+const mapHeight = compact ? '360px' : '420px';
+---
+
+<section class="nearby-amenities-section" aria-labelledby="nearby-amenities-heading">
+  <Container>
+    <div class="nearby-amenities-section__header">
+      <h2 id="nearby-amenities-heading">{heading}</h2>
+      <p>{intro}</p>
+      <p>
+        <a href={amenitiesPageHref} class="agent-button">
+          View full nearby amenities guide
+        </a>
+      </p>
+    </div>
+    <AmenityMap
+      instanceId={`nearby-${Astro.url.pathname.replace(/\//g, '-') || 'home'}`}
+      showFilters={!compact}
+      showStaticList={!compact}
+      mapHeight={mapHeight}
+    />
+  </Container>
+</section>
+
+<style>
+  .nearby-amenities-section {
+    padding: 3rem 1rem;
+    background-color: var(--theme-surface-2);
+    color: var(--theme-on-surface-2);
+  }
+  .nearby-amenities-section__header {
+    max-width: 48rem;
+    margin-bottom: 1.5rem;
+  }
+  .nearby-amenities-section__header h2 {
+    color: var(--theme-on-surface-2);
+  }
+</style>

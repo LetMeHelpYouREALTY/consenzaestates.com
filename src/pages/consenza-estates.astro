@@ -5,6 +5,7 @@ import HeroSection from '@components/sections/heros/HeroSection.astro';
 import ThreeColumnTextSection from '@components/sections/ThreeColumnTextSection.astro';
 import CalendlyLink from '@components/CalendlyLink.astro';
 import RealScoutListings from '@components/RealScoutListings.astro';
+import NearbyAmenitiesSection from '@components/amenities/NearbyAmenitiesSection.astro';
 
 const seo = {
   title: 'Consenza Estates Community | Dr. Jan Duffy',
@@ -79,6 +80,11 @@ const seo = {
       </ul>
     </div>
   </ThreeColumnTextSection>
+
+  <NearbyAmenitiesSection
+    heading="Explore Life Near Consenza Estates"
+    intro="See parks, grocery, healthcare, and schools on the map—then open the full nearby amenities guide for commute notes and FAQs."
+  />
 
   <StickyTextImageSection>
     <div slot="text-container">

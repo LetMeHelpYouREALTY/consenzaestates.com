@@ -5,6 +5,7 @@ import Layout from '@layouts/Page.astro';
 import HeroSection from '@components/sections/heros/HeroSection.astro';
 import CalendlyLink from '@components/CalendlyLink.astro';
 import RealScoutListings from '../components/RealScoutListings.astro';
+import NearbyAmenitiesSection from '../components/amenities/NearbyAmenitiesSection.astro';
 
 const seo = {
   title: 'Consenza Estates Properties | Dr. Jan Duffy',
@@ -28,6 +29,11 @@ const seo = {
   </HeroSection>
 
   <RealScoutListings sectionTitle="Current Listings in Consenza Estates" />
+
+  <NearbyAmenitiesSection
+    heading="What's Near Your Next Consenza Home"
+    intro="Before you tour listings, see everyday amenities around Consenza Estates on the map below."
+  />
 
   <Container>
     <TextSection>

@@ -1,0 +1,236 @@
+---
+import community, { amenityCategories } from '../../config/community.js';
+import curatedAmenities from '../../config/curatedAmenities.js';
+
+export interface Props {
+  /** Unique id prefix for filter aria controls */
+  instanceId?: string;
+  /** Show category filter chips */
+  showFilters?: boolean;
+  /** Show curated static list beside/below map */
+  showStaticList?: boolean;
+  /** Map canvas height */
+  mapHeight?: string;
+}
+
+const {
+  instanceId = 'amenity-map',
+  showFilters = true,
+  showStaticList = true,
+  mapHeight = '420px',
+} = Astro.props;
+
+const apiKey = import.meta.env.PUBLIC_GOOGLE_MAPS_API_KEY ?? '';
+const mapId = import.meta.env.PUBLIC_GOOGLE_MAPS_MAP_ID ?? '';
+const { lat, lng } = community.center;
+const embedUrl = `https://www.google.com/maps?q=${lat},${lng}&z=${community.defaultZoom}&output=embed`;
+const categoriesJson = JSON.stringify(amenityCategories);
+const defaultCategory = amenityCategories[0]?.id ?? 'grocery';
+---
+
+<div
+  class="amenity-map"
+  data-amenity-map-root
+  data-api-key={apiKey}
+  data-map-id={mapId}
+  data-lat={String(lat)}
+  data-lng={String(lng)}
+  data-zoom={String(community.defaultZoom)}
+  data-radius={String(community.searchRadiusMeters)}
+  data-community-name={community.name}
+  data-community-address={community.salesCenterAddress}
+  data-categories={categoriesJson}
+  id={instanceId}
+>
+  <div data-amenity-interactive hidden={!apiKey}>
+    {showFilters && (
+      <div
+        class="amenity-map__filters"
+        data-amenity-filters
+        role="toolbar"
+        aria-label={`Filter nearby places around ${community.name}`}
+      >
+        {amenityCategories.map((cat, index) => (
+          <button
+            type="button"
+            class="amenity-map__filter-chip"
+            data-amenity-filter={cat.id}
+            aria-pressed={cat.id === defaultCategory ? 'true' : 'false'}
+            aria-label={`Show ${cat.label} near ${community.name}`}
+          >
+            {cat.label}
+          </button>
+        ))}
+      </div>
+    )}
+    <p class="amenity-map__status" data-amenity-status aria-live="polite">
+      Map loads when you scroll here. Explore amenities around {community.name}.
+    </p>
+    <div
+      class="amenity-map__canvas"
+      data-amenity-map-canvas
+      role="application"
+      aria-label={`Interactive map of amenities near ${community.name}, ${community.city}`}
+      style={`min-height: ${mapHeight}; height: ${mapHeight};`}
+    />
+    <ul class="amenity-map__results" data-amenity-results-list aria-label="Places on map for selected category" />
+  </div>
+
+  <div data-amenity-fallback hidden={!!apiKey}>
+    <p class="amenity-map__fallback-note">
+      Interactive map preview — add <code>PUBLIC_GOOGLE_MAPS_API_KEY</code> in Vercel for live Places search and
+      filters.
+    </p>
+    <iframe
+      title={`Map centered on ${community.name}, ${community.city}`}
+      class="amenity-map__embed"
+      src={embedUrl}
+      loading="lazy"
+      referrerpolicy="no-referrer-when-downgrade"
+      style={`min-height: ${mapHeight}; height: ${mapHeight}; border: 0; width: 100%;`}
+    />
+  </div>
+
+  {showStaticList && (
+    <aside class="amenity-map__curated" aria-labelledby={`${instanceId}-curated-heading`}>
+      <h3 id={`${instanceId}-curated-heading`}>Featured places near {community.name}</h3>
+      <ul class="amenity-map__curated-list">
+        {curatedAmenities.map((place) => (
+          <li>
+            <strong>{place.name}</strong>
+            <span class="amenity-map__curated-cat">
+              {amenityCategories.find((c) => c.id === place.category)?.label ?? place.category}
+            </span>
+            <address>{place.address}</address>
+            <a
+              href={`https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(`${place.name} ${place.address}`)}`}
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              Directions
+            </a>
+          </li>
+        ))}
+      </ul>
+    </aside>
+  )}
+</div>
+
+<script>
+  import '../../scripts/amenity-map.js';
+</script>
+
+<style>
+  .amenity-map {
+    width: 100%;
+  }
+  .amenity-map__filters {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    margin-bottom: 1rem;
+  }
+  .amenity-map__filter-chip {
+    font-family: var(--sans-font, inherit);
+    font-size: 0.85rem;
+    padding: 0.45rem 0.85rem;
+    border-radius: 999px;
+    border: 1px solid var(--theme-surface-3, #ccc);
+    background: var(--theme-surface-1, #fff);
+    color: inherit;
+    cursor: pointer;
+    transition: background 0.2s, border-color 0.2s;
+  }
+  .amenity-map__filter-chip[aria-pressed='true'] {
+    background: var(--bhhs-purple, #7d3f98);
+    border-color: var(--bhhs-purple, #7d3f98);
+    color: #fff;
+  }
+  .amenity-map__filter-chip:focus-visible {
+    outline: 2px solid var(--luxury-gold, #d4af37);
+    outline-offset: 2px;
+  }
+  .amenity-map__status {
+    font-size: 0.9rem;
+    margin: 0 0 0.75rem;
+    color: var(--theme-text-2, #666);
+  }
+  .amenity-map__canvas {
+    width: 100%;
+    border-radius: var(--theme-shape-radius, 0.5rem);
+    background: var(--theme-surface-2, #eee);
+  }
+  .amenity-map__embed {
+    border-radius: var(--theme-shape-radius, 0.5rem);
+    display: block;
+  }
+  .amenity-map__results {
+    margin: 1rem 0 0;
+    padding: 0;
+    list-style: none;
+    display: grid;
+    gap: 0.75rem;
+  }
+  .amenity-map__results li {
+    padding: 0.75rem 1rem;
+    background: var(--theme-surface-1, rgba(255, 255, 255, 0.06));
+    border-radius: var(--theme-shape-radius, 0.5rem);
+    font-size: 0.95rem;
+  }
+  .amenity-map__curated {
+    margin-top: 2rem;
+  }
+  .amenity-map__curated-list {
+    list-style: none;
+    padding: 0;
+    margin: 1rem 0 0;
+    display: grid;
+    gap: 1rem;
+  }
+  .amenity-map__curated-list address {
+    font-style: normal;
+    font-size: 0.9rem;
+    margin: 0.25rem 0;
+    opacity: 0.9;
+  }
+  .amenity-map__curated-cat {
+    display: inline-block;
+    margin-left: 0.5rem;
+    font-size: 0.75rem;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+    opacity: 0.75;
+  }
+  .amenity-map__fallback-note {
+    font-size: 0.9rem;
+    margin-bottom: 0.75rem;
+  }
+  :global(.amenity-map__community-pin) {
+    width: 2rem;
+    height: 2rem;
+    border-radius: 50%;
+    background: var(--luxury-gold, #d4af37);
+    color: #111;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 700;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.25);
+  }
+  :global(.amenity-map__place-pin) {
+    width: 1.25rem;
+    height: 1.25rem;
+    border-radius: 50%;
+    background: var(--bhhs-purple, #7d3f98);
+    color: #fff;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.75rem;
+  }
+  :global(.amenity-map__info) {
+    max-width: 220px;
+    font-size: 0.9rem;
+    line-height: 1.4;
+  }
+</style>

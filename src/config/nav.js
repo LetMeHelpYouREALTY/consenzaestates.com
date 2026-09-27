@@ -13,6 +13,10 @@ export const nav = [
 		slug: '/consenza-estates',
 	},
 	{
+		title: 'Nearby Amenities',
+		slug: '/amenities',
+	},
+	{
 		title: 'Lennar Homes',
 		slug: '/lennar-homes',
 	},
