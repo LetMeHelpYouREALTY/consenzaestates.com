@@ -1,6 +1,7 @@
 ---
 import settings from '../../config/settings.js';
 import ThemeProvider from '../theme-switcher/ThemeProvider.astro';
+import { buildBreadcrumbList } from '../../utils/breadcrumbs.js';
 
 import '../../styles/index.css';
 
@@ -13,6 +14,8 @@ export interface Props {
 	imageWidth?: number;
 	/** OG/Twitter image height (default 630). */
 	imageHeight?: number;
+	/** Optional label for the current page in BreadcrumbList JSON-LD */
+	breadcrumbLabel?: string;
 }
 
 const title = Astro.props.title || settings.title;
@@ -24,9 +27,12 @@ const imageHeight = Astro.props.imageHeight ?? settings.seo?.openGraph?.images?.
 const ga4Id = import.meta.env.PUBLIC_GA4_MEASUREMENT_ID;
 
 const socialUrls = settings.social ? Object.values(settings.social).filter(Boolean) : [];
-const jsonLd = {
-  '@context': 'https://schema.org',
-  '@graph': [
+const faqItems = settings.faq ?? [];
+const breadcrumbList = buildBreadcrumbList(Astro.url.pathname, {
+  title,
+  breadcrumbLabel: Astro.props.breadcrumbLabel,
+});
+const jsonLdGraph = [
     {
       '@type': 'WebSite',
       '@id': `${settings.url}/#website`,
@@ -65,7 +71,30 @@ const jsonLd = {
       description: settings.description,
       sameAs: socialUrls
     }
-  ]
+];
+
+if (breadcrumbList) {
+  jsonLdGraph.push(breadcrumbList);
+}
+
+if (faqItems.length > 0) {
+  jsonLdGraph.push({
+    '@type': 'FAQPage',
+    '@id': `${settings.url}/#faq`,
+    mainEntity: faqItems.map((item) => ({
+      '@type': 'Question',
+      name: item.question,
+      acceptedAnswer: {
+        '@type': 'Answer',
+        text: item.answer,
+      },
+    })),
+  });
+}
+
+const jsonLd = {
+  '@context': 'https://schema.org',
+  '@graph': jsonLdGraph,
 };
 ---
 
