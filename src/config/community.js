@@ -21,7 +21,7 @@ export const community = {
 };
 
 /**
- * Category chips for the amenity map (family Lennar community — schools included).
+ * Category chips for the amenity map (schools category uses CCSD zoning — verify before you buy).
  * `placeTypes` are Google Places (New) primary types for searchNearby.
  */
 export const amenityCategories = [

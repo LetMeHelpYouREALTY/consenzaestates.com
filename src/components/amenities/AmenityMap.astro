@@ -25,6 +25,7 @@ const mapId = import.meta.env.PUBLIC_GOOGLE_MAPS_MAP_ID ?? '';
 const { lat, lng } = community.center;
 const embedUrl = `https://www.google.com/maps?q=${lat},${lng}&z=${community.defaultZoom}&output=embed`;
 const categoriesJson = JSON.stringify(amenityCategories);
+const curatedJson = JSON.stringify(curatedAmenities);
 const defaultCategory = amenityCategories[0]?.id ?? 'grocery';
 ---
 
@@ -40,6 +41,7 @@ const defaultCategory = amenityCategories[0]?.id ?? 'grocery';
   data-community-name={community.name}
   data-community-address={community.salesCenterAddress}
   data-categories={categoriesJson}
+  data-curated={curatedJson}
   id={instanceId}
 >
   <div data-amenity-interactive hidden={!apiKey}>
@@ -77,10 +79,6 @@ const defaultCategory = amenityCategories[0]?.id ?? 'grocery';
   </div>
 
   <div data-amenity-fallback hidden={!!apiKey}>
-    <p class="amenity-map__fallback-note">
-      Interactive map preview — add <code>PUBLIC_GOOGLE_MAPS_API_KEY</code> in Vercel for live Places search and
-      filters.
-    </p>
     <iframe
       title={`Map centered on ${community.name}, ${community.city}`}
       class="amenity-map__embed"
@@ -200,10 +198,6 @@ const defaultCategory = amenityCategories[0]?.id ?? 'grocery';
     text-transform: uppercase;
     letter-spacing: 0.04em;
     opacity: 0.75;
-  }
-  .amenity-map__fallback-note {
-    font-size: 0.9rem;
-    margin-bottom: 0.75rem;
   }
   :global(.amenity-map__community-pin) {
     width: 2rem;
