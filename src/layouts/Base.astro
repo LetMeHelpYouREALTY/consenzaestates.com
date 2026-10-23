@@ -26,7 +26,11 @@ const badgeText = settings.calendly?.badgeText ?? 'Schedule time with me';
 		<main id="content">
 			<slot />
 		</main>
-		<slot name="footer" />
+		<slot name="footer">
+			<footer style="padding:1.5rem 1rem;text-align:center;font-size:0.875rem;">
+				<p>Berkshire Hathaway HomeServices Nevada Properties since September 2008 · License S.0197614.LLC</p>
+			</footer>
+		</slot>
 		<script is:inline>
 			(function(w,i,d,g,e,t){w["WidgetTrackerObject"]=g;(w[g]=w[g]||function()
 			{(w[g].q=w[g].q||[]).push(arguments);}),(w[g].ds=1*new Date());(e="script"),
