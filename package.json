@@ -18,6 +18,7 @@
 		"@astrojs/lit": "^4.3.0",
 		"@astrojs/mdx": "^4.3.13",
 		"@astrojs/sitemap": "^3.7.0",
+		"@types/google.maps": "^3.58.1",
 		"@webcomponents/template-shadowroot": "^0.2.1",
 		"astro": "^5.18.0",
 		"date-fns": "^4.1.0",

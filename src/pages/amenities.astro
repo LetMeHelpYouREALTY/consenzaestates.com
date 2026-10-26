@@ -1,0 +1,266 @@
+---
+import { Container, TextSection } from '@components/odyssey-theme.js';
+import Layout from '@layouts/Page.astro';
+import AmenityMap from '../components/amenities/AmenityMap.astro';
+import CalendlyLink from '../components/CalendlyLink.astro';
+import community from '../config/community.js';
+import curatedAmenities from '../config/curatedAmenities.js';
+import settings from '../config/settings.js';
+
+const seo = {
+  title: `Nearby Amenities in ${community.name}, ${community.city} | Dr. Jan Duffy`,
+  description: `Interactive map and local guide to grocery, parks, healthcare, schools, and shopping near ${community.name} Lennar homes in ${community.city}, NV. Your hyperlocal Consenza specialist.`,
+  canonicalURL: new URL('/amenities', settings.url),
+};
+
+const amenitiesFaq = [
+  {
+    question: `What grocery stores are near ${community.name}?`,
+    answer: `Albertsons on Blue Diamond Rd and Smith's on W Charleston Blvd are common grocery runs from ${community.name}, with additional options along Durango Dr and in Summerlin (approximate drive times).`,
+  },
+  {
+    question: `How far is ${community.name} from the Las Vegas Strip?`,
+    answer: `From ${community.name} near Blue Diamond Rd, the Las Vegas Strip is roughly a 20–25 minute drive in typical traffic (approximate, varies by time of day).`,
+  },
+  {
+    question: `Are there hospitals near ${community.name}?`,
+    answer: `Southern Hills Hospital and Medical Center on W Sunset Rd is one of the closest full-service hospitals to the Mountain's Edge / ${community.shortName} area.`,
+  },
+  {
+    question: `What parks are close to ${community.name}?`,
+    answer: `Mountain's Edge Regional Park on W Mountains Edge Pkwy is a headline outdoor amenity, with playgrounds, courts, and trails; Exploration Peak Park on S Buffalo Dr is also in the Mountain's Edge master plan.`,
+  },
+  {
+    question: `Which CCSD schools are assigned to ${community.name} addresses?`,
+    answer: `Attendance zones vary by street and phase within Mountain's Edge. Verify current assignments with the Clark County School District Zoning Search (ccsd.net) before you buy — do not rely on map pins alone.`,
+  },
+  {
+    question: `How long does it take to reach Harry Reid International Airport from ${community.name}?`,
+    answer: `Harry Reid International Airport is typically about 25–35 minutes from southwest Las Vegas near Blue Diamond Rd, depending on traffic and your route (approximate).`,
+  },
+  {
+    question: `Is Downtown Summerlin close to ${community.name}?`,
+    answer: `Downtown Summerlin is roughly 15–20 minutes north via Buffalo Dr or the 215 Beltway in normal traffic—close enough for dining, shopping, and medical offices (approximate).`,
+  },
+  {
+    question: `Who can help me compare ${community.name} amenities before I buy?`,
+    answer: `Dr. Jan Duffy is the Consenza Estates and Lennar specialist on this site—call ${settings.contact.phone} or book a free strategy call for a hyperlocal walkthrough of commute, schools, and daily errands.`,
+  },
+];
+
+const breadcrumbLd = {
+  '@type': 'BreadcrumbList',
+  itemListElement: [
+    { '@type': 'ListItem', position: 1, name: 'Home', item: settings.url },
+    { '@type': 'ListItem', position: 2, name: 'Nearby Amenities', item: `${settings.url}/amenities` },
+  ],
+};
+
+const communityPlaceLd = {
+  '@type': 'Place',
+  '@id': `${settings.url}/amenities#community`,
+  name: community.name,
+  description: `Lennar new-home community in ${community.city}, Nevada, near Blue Diamond Rd and Mountain's Edge Regional Park.`,
+  address: {
+    '@type': 'PostalAddress',
+    streetAddress: '7131 Windsor Downs Ave',
+    addressLocality: community.city,
+    addressRegion: community.stateCode,
+    postalCode: community.postalCode,
+    addressCountry: 'US',
+  },
+  geo: {
+    '@type': 'GeoCoordinates',
+    latitude: community.center.lat,
+    longitude: community.center.lng,
+  },
+};
+
+const itemListLd = {
+  '@type': 'ItemList',
+  name: `Places near ${community.name}`,
+  itemListElement: curatedAmenities.map((place, index) => ({
+    '@type': 'ListItem',
+    position: index + 1,
+    item: {
+      '@type': place.schemaType,
+      name: place.name,
+      address: place.address,
+    },
+  })),
+};
+
+const faqLd = {
+  '@type': 'FAQPage',
+  mainEntity: amenitiesFaq.map((item) => ({
+    '@type': 'Question',
+    name: item.question,
+    acceptedAnswer: { '@type': 'Answer', text: item.answer },
+  })),
+};
+
+const agentAreaLd = {
+  '@type': 'RealEstateAgent',
+  '@id': `${settings.url}/#organization`,
+  areaServed: {
+    '@id': `${settings.url}/amenities#community`,
+  },
+};
+
+const pageGraphLd = {
+  '@context': 'https://schema.org',
+  '@graph': [breadcrumbLd, communityPlaceLd, itemListLd, faqLd, agentAreaLd],
+};
+---
+
+<Layout seo={seo}>
+  <Container>
+    <TextSection>
+      <h1>Nearby Amenities in {community.name}, {community.city}</h1>
+      <p>
+        {community.name} sits in southwest {community.city} near Blue Diamond Rd, with Lennar's sales center at{' '}
+        {community.salesCenterAddress}. Use the map below to explore restaurants, grocery, parks, healthcare, and more—then
+        read the hyperlocal notes Dr. Jan Duffy shares with buyers every week.
+      </p>
+    </TextSection>
+  </Container>
+
+  <Container>
+    <AmenityMap instanceId="amenities-page-map" showFilters={true} showStaticList={true} mapHeight="480px" />
+  </Container>
+
+  <Container>
+    <TextSection>
+      <h2>Dining &amp; Coffee</h2>
+      <p>
+        Blue Diamond Rd connects {community.name} to west–southwest Las Vegas dining corridors. You'll find national
+        chains and local favorites toward Durango Dr, Fort Apache Rd, and the Silverado Ranch area—ideal for casual
+        nights out after a pool day at the community clubhouse.
+      </p>
+
+      <h2>Parks &amp; Recreation</h2>
+      <p>
+        <strong>Mountain's Edge Regional Park</strong> (8101 W Mountains Edge Pkwy) is a Clark County regional park with
+        courts, playgrounds, and open space near Lennar homes. <strong>Exploration Peak Park</strong> (9700 S Buffalo Dr)
+        adds trails and valley views within the Mountain's Edge master plan. For a weekend outing,{' '}
+        <strong>Red Rock Canyon National Conservation Area</strong> is a scenic drive west on Charleston Blvd (approximate).
+      </p>
+
+      <h2>Golf</h2>
+      <p>
+        Southwest Las Vegas and Summerlin offer multiple public and private courses. Many {community.name} buyers also
+        belong to clubs in Summerlin or Henderson; drive times vary by tee time and traffic (approximate).
+      </p>
+
+      <h2>Healthcare</h2>
+      <p>
+        <strong>Southern Hills Hospital and Medical Center</strong> on W Sunset Rd provides emergency and specialty care a
+        short drive from the Mountain's Edge area. Summerlin Hospital and other medical campuses along the 215 Beltway
+        expand options for specialists (approximate drive times).
+      </p>
+
+      <h2>Shopping &amp; Errands</h2>
+      <p>
+        Day-to-day grocery often starts at <strong>Albertsons</strong> on Blue Diamond Rd or{' '}
+        <strong>Smith's Food and Drug</strong> on W Charleston Blvd. Larger runs may include Summerlin retail centers or
+        big-box options along Blue Diamond Rd and the I-215 corridor (approximate).
+      </p>
+
+      <h2>Schools</h2>
+      <p>
+        CCSD attendance boundaries for Mountain's Edge and southwest Las Vegas shift by address. Use the Clark County
+        School District Zoning Search to see which elementary, middle, and high schools are assigned to a specific{' '}
+        {community.name} lot before you write an offer.
+      </p>
+
+      <h2>Commute &amp; Destinations</h2>
+      <ul>
+        <li>
+          <strong>Las Vegas Strip</strong> — approximately 20–25 minutes via Blue Diamond Rd and I-15 (traffic dependent).
+        </li>
+        <li>
+          <strong>Harry Reid International Airport</strong> — approximately 25–35 minutes east via surface streets or the
+          215 Beltway.
+        </li>
+        <li>
+          <strong>Downtown Summerlin</strong> — approximately 15–20 minutes north for shopping, dining, and services.
+        </li>
+      </ul>
+      <p>
+        <em>Drive times are approximate and not guaranteed; test your commute during the hours you plan to travel.</em>
+      </p>
+    </TextSection>
+
+    <section class="amenities-faq" aria-labelledby="amenities-faq-heading">
+      <h2 id="amenities-faq-heading">Nearby Amenities FAQ</h2>
+      <dl class="amenities-faq__list">
+        {amenitiesFaq.map((item) => (
+          <div class="amenities-faq__item">
+            <dt>{item.question}</dt>
+            <dd>{item.answer}</dd>
+          </div>
+        ))}
+      </dl>
+    </section>
+
+    <section class="amenities-cta" aria-labelledby="amenities-cta-heading">
+      <h2 id="amenities-cta-heading">Your Hyperlocal {community.name} REALTOR®</h2>
+      <p>
+        Dr. Jan Duffy, REALTOR® (license S.0197614.LLC), represents buyers and sellers with Berkshire Hathaway
+        HomeServices Nevada Properties. She knows Lennar floor plans, HOA details, and the errands that matter once you
+        move in.
+      </p>
+      <p>
+        <strong>Phone:</strong>{' '}
+        <a href={`tel:${settings.contact.phone.replace(/\D/g, '')}`}>{settings.contact.phone}</a>
+        <br />
+        <strong>Email:</strong> <a href={`mailto:${settings.contact.email}`}>{settings.contact.email}</a>
+        <br />
+        <strong>Office:</strong> {settings.contact.address}
+      </p>
+      <p>
+        <CalendlyLink class="agent-button" utmCampaign="amenities_cta">Book a free 15‑min call</CalendlyLink>
+        <a href="/properties" class="agent-button" style="margin-left: 1rem;">View Consenza listings</a>
+      </p>
+      <p class="amenities-cta__note">Free 15‑minute call — no obligation.</p>
+    </section>
+  </Container>
+
+  <script type="application/ld+json" set:html={JSON.stringify(pageGraphLd)} />
+</Layout>
+
+<style>
+  .amenities-faq {
+    margin: 3rem 0;
+  }
+  .amenities-faq__list {
+    display: flex;
+    flex-direction: column;
+    gap: 1.25rem;
+    margin: 1.5rem 0 0;
+  }
+  .amenities-faq__item {
+    padding: 1rem 1.25rem;
+    background: var(--theme-surface-2);
+    border-radius: var(--theme-shape-radius);
+  }
+  .amenities-faq__item dt {
+    font-weight: 600;
+    margin-bottom: 0.5rem;
+  }
+  .amenities-faq__item dd {
+    margin: 0;
+    line-height: 1.55;
+  }
+  .amenities-cta {
+    margin: 3rem 0 4rem;
+    padding: 2rem;
+    background: var(--theme-surface-2);
+    border-radius: var(--theme-shape-radius);
+  }
+  .amenities-cta__note {
+    font-size: 0.9rem;
+    margin-top: 0.75rem;
+    opacity: 0.9;
+  }
+</style>
