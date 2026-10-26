@@ -26,3 +26,4 @@ pnpm-debug.log*
 icon.d.ts
 *.cache
 .vercel
+.astro/
