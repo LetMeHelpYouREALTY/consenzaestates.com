@@ -21,6 +21,10 @@ export const nav = [
 		slug: '/properties',
 	},
 	{
+		title: 'Sell to buy',
+		slug: '/sell-your-home-to-buy-at-consenza-estates',
+	},
+	{
 		title: 'Neighborhoods',
 		slug: '/neighborhoods',
 	},

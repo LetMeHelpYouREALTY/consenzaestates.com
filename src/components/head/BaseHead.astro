@@ -2,6 +2,7 @@
 import settings from '../../config/settings.js';
 import ThemeProvider from '../theme-switcher/ThemeProvider.astro';
 import { buildBreadcrumbList } from '../../utils/breadcrumbs.js';
+import { isOdysseyDemoPath } from '../../utils/demo-pages.js';
 
 import '../../styles/index.css';
 
@@ -25,6 +26,7 @@ const image = new URL(Astro.props.image || './social.png', Astro.site);
 const imageWidth = Astro.props.imageWidth ?? settings.seo?.openGraph?.images?.[0]?.width ?? 1200;
 const imageHeight = Astro.props.imageHeight ?? settings.seo?.openGraph?.images?.[0]?.height ?? 630;
 const ga4Id = import.meta.env.PUBLIC_GA4_MEASUREMENT_ID;
+const noIndex = isOdysseyDemoPath(Astro.url.pathname);
 
 const socialUrls = settings.social ? Object.values(settings.social).filter(Boolean) : [];
 const faqItems = settings.faq ?? [];
@@ -58,7 +60,15 @@ const jsonLdGraph = [
         addressCountry: 'US'
       },
       image: new URL(settings.site?.logo ?? '/assets/images/logo.png', settings.url).toString(),
-      sameAs: socialUrls
+      sameAs: socialUrls,
+      areaServed: {
+        '@type': 'Place',
+        name: 'Consenza Estates',
+        containedInPlace: {
+          '@type': 'City',
+          name: 'Las Vegas',
+        },
+      },
     },
     {
       '@type': 'Person',
@@ -106,6 +116,7 @@ const jsonLd = {
 <title>{title}</title>
 <meta name="title" content={title} />
 <meta name="description" content={description} />
+{noIndex && <meta name="robots" content="noindex, follow" />}
 <link rel="canonical" href={canonicalURL} />
 <link rel="sitemap" href={new URL('/sitemap-index.xml', Astro.site)} type="application/xml" />
 <!-- Google Search Console verification (set PUBLIC_GOOGLE_SITE_VERIFICATION in .env) -->

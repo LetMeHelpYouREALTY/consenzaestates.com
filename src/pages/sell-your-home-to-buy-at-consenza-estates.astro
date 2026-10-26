@@ -1,0 +1,144 @@
+---
+import { Container, TextSection } from '@components/odyssey-theme.js';
+import Layout from '@layouts/Page.astro';
+import TextAndImageHero from '@components/sections/heros/TextAndImageHero.astro';
+import CalendlyLink from '@components/CalendlyLink.astro';
+import CalendlyInline from '@components/CalendlyInline.astro';
+import { LISTING_CONSULTATION } from '../utils/calendly-url.js';
+import settings from '../config/settings.js';
+
+const phoneDigits = settings.contact.phone.replace(/\D/g, '').slice(-10);
+const phoneDisplay = phoneDigits
+	? `(${phoneDigits.slice(0, 3)}) ${phoneDigits.slice(3, 6)}-${phoneDigits.slice(6)}`
+	: settings.contact.phone;
+const phoneTel = phoneDigits ? `tel:+1${phoneDigits}` : `tel:${settings.contact.phone.replace(/\s/g, '')}`;
+
+const seo = {
+	title: 'Sell Your Consenza Estates Home | Dr. Jan Duffy',
+	description:
+		'Planning a move-up to new construction at Consenza Estates? Dr. Jan Duffy helps Las Vegas sellers time their sale, prep the home, and coordinate the purchase.',
+	breadcrumbLabel: 'Sell to buy at Consenza Estates',
+};
+---
+
+<Layout {seo}>
+	<TextAndImageHero>
+		<div slot="text-container">
+			<h1>Sell your current home to buy at Consenza Estates</h1>
+			<p>
+				Upgrading to a Lennar estate plan at Consenza Estates often means selling a home you already own in the Las Vegas area.
+				Dr. Jan Duffy is an independent REALTOR® with Berkshire Hathaway HomeServices Nevada Properties—she does not represent Lennar or
+				its sales offices (<a href="https://www.lennar.com/new-homes/nevada/las-vegas/las-vegas/consenza-estates" rel="noopener noreferrer">Lennar.com community page, 2026-10-26</a>).
+			</p>
+			<div class="hero-actions">
+				<CalendlyLink
+					class="agent-button"
+					eventSlug={LISTING_CONSULTATION}
+					utmContent="seller_hero"
+					utmCampaign="consenza_seller_hero"
+				>
+					Book a listing consultation
+				</CalendlyLink>
+				<a href={phoneTel} class="agent-button agent-button--outline">Call {phoneDisplay}</a>
+			</div>
+		</div>
+		<div slot="image-container">
+			<picture>
+				<img
+					src="/assets/images/home/consenza-estates-hero.jpg"
+					alt="Consenza Estates new construction in Las Vegas"
+					width="780"
+					height="585"
+					loading="eager"
+				/>
+			</picture>
+		</div>
+	</TextAndImageHero>
+
+	<TextSection>
+		<h2>How Dr. Duffy coordinates a move-up purchase</h2>
+		<p>
+			Consenza Estates buyers often need clarity on timing: when to list, how long a resale may take, and how that lines up with Lennar
+			lot releases or build schedules. Dr. Duffy maps those steps with you—pricing strategy, preparation priorities, marketing plan, and
+			negotiation—so you can pursue a Consenza contract with fewer surprises.
+		</p>
+		<ul>
+			<li><strong>Pricing &amp; preparation</strong> — Comparable sales near your current home, plus practical prep that supports showings without over-investing.</li>
+			<li><strong>Marketing</strong> — Professional photography, MLS exposure, and consistent follow-up with buyer agents across the valley.</li>
+			<li><strong>Negotiation &amp; timelines</strong> — Offers, inspection items, and closing dates aligned with your new-build milestones.</li>
+			<li><strong>Buyer representation at Consenza</strong> — Independent guidance on Lennar collections, options, and contract details while you remain the client—not the builder.</li>
+		</ul>
+
+		<h2 id="home-worth">What's my Las Vegas home worth before I buy at Consenza?</h2>
+		<p>
+			Start with a listing consultation. Dr. Duffy reviews your property, recent MLS activity, and your Consenza purchase goals—no automated
+			"instant value" gimmicks and no obligation to list.
+		</p>
+		<p>
+			<CalendlyLink
+				eventSlug={LISTING_CONSULTATION}
+				utmContent="seller_valuation_cta"
+				utmCampaign="consenza_seller_valuation"
+			>
+				Schedule your listing consultation
+			</CalendlyLink>
+		</p>
+	</TextSection>
+
+	<Container>
+		<div class="calendly-block" id="schedule">
+			<h2>Pick a time for your listing consultation</h2>
+			<CalendlyInline
+				minWidth="320px"
+				height="700px"
+				eventSlug={LISTING_CONSULTATION}
+				utmContent="seller_inline"
+				utmCampaign="consenza_seller_inline"
+			/>
+		</div>
+	</Container>
+
+	<TextSection>
+		<p class="brokerage-note">
+			Dr. Jan Duffy, REALTOR® · License S.0197614.LLC · Berkshire Hathaway HomeServices Nevada Properties.
+			Listing data on other pages is provided through the MLS via RealScout; all information deemed reliable but not guaranteed.
+		</p>
+	</TextSection>
+</Layout>
+
+<style>
+	.hero-actions {
+		display: flex;
+		flex-wrap: wrap;
+		gap: 1rem;
+		margin-top: 1.5rem;
+	}
+	.agent-button {
+		display: inline-flex;
+		align-items: center;
+		justify-content: center;
+		padding: 0.65rem 1.25rem;
+		border-radius: var(--theme-button-border-radius);
+		background: var(--theme-primary);
+		color: var(--theme-on-primary);
+		font-weight: 600;
+		text-decoration: none;
+	}
+	.agent-button--outline {
+		background: transparent;
+		border: 2px solid var(--theme-primary);
+		color: var(--theme-primary);
+	}
+	.calendly-block {
+		margin: 2rem auto 3rem;
+		max-width: var(--container-width, 960px);
+	}
+	.calendly-block h2 {
+		margin-bottom: 1rem;
+		text-align: center;
+	}
+	.brokerage-note {
+		font-size: 0.9rem;
+		opacity: 0.85;
+	}
+</style>

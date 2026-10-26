@@ -1,5 +1,5 @@
 ---
-import settings from '../config/settings.js';
+import { buildCalendlyUrl } from '../utils/calendly-url.js';
 
 interface Props {
 	href?: string;
@@ -7,12 +7,20 @@ interface Props {
 	buttonStyle?: 'primary' | 'outlined' | 'unelevated';
 	/** UTM campaign for this CTA (e.g. header, contact_hero, resources_cta). Used for Calendly/GA tracking. */
 	utmCampaign?: string;
+	/** Calendly event slug (e.g. listing-consultation). Defaults to settings strategy meeting. */
+	eventSlug?: string;
+	/** utm_content for listing-consultation and other non-default events. */
+	utmContent?: string;
 }
 
-const { class: className = '', buttonStyle = 'primary', utmCampaign = '' } = Astro.props;
-const calendlyUrl = settings.calendly?.urlWithUtm
-	? settings.calendly.urlWithUtm(utmCampaign)
-	: (settings.calendly?.url ?? 'https://calendly.com/drjanduffy/realtor_strategy_meeting');
+const {
+	class: className = '',
+	buttonStyle = 'primary',
+	utmCampaign = '',
+	eventSlug = '',
+	utmContent = '',
+} = Astro.props;
+const calendlyUrl = buildCalendlyUrl({ eventSlug, utmCampaign, utmContent });
 ---
 
 <a
