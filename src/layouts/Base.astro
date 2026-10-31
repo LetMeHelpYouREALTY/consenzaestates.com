@@ -9,6 +9,8 @@ export interface Props {
 }
 
 const { seo } = Astro.props;
+// Follow Up Boss Pixel only on the production deploy, so Vercel previews don't register with FUB.
+const loadFubPixel = process.env.VERCEL_ENV === 'production';
 const calendlyUrl = settings.calendly?.urlWithUtm ? settings.calendly.urlWithUtm('badge') : (settings.calendly?.url ?? 'https://calendly.com/drjanduffy/realtor_strategy_meeting');
 const badgeText = settings.calendly?.badgeText ?? 'Schedule time with me';
 ---
@@ -31,15 +33,17 @@ const badgeText = settings.calendly?.badgeText ?? 'Schedule time with me';
 				<p>Berkshire Hathaway HomeServices Nevada Properties since September 2008 · License S.0197614.LLC</p>
 			</footer>
 		</slot>
-		<script is:inline>
-			(function(w,i,d,g,e,t){w["WidgetTrackerObject"]=g;(w[g]=w[g]||function()
-			{(w[g].q=w[g].q||[]).push(arguments);}),(w[g].ds=1*new Date());(e="script"),
-			(t=d.createElement(e)),(e=d.getElementsByTagName(e)[0]);t.async=1;t.src=i;
-			e.parentNode.insertBefore(t,e);})
-			(window,"https://widgetbe.com/agent",document,"widgetTracker");
-			window.widgetTracker("create", "WT-XQHVYQWW");
-			window.widgetTracker("send", "pageview");
-		</script>
+		{loadFubPixel && (
+			<script is:inline>
+				(function(w,i,d,g,e,t){w["WidgetTrackerObject"]=g;(w[g]=w[g]||function()
+				{(w[g].q=w[g].q||[]).push(arguments);}),(w[g].ds=1*new Date());(e="script"),
+				(t=d.createElement(e)),(e=d.getElementsByTagName(e)[0]);t.async=1;t.src=i;
+				e.parentNode.insertBefore(t,e);})
+				(window,"https://widgetbe.com/agent",document,"widgetTracker");
+				window.widgetTracker("create", "WT-XQHVYQWW");
+				window.widgetTracker("send", "pageview");
+			</script>
+		)}
 		<script src="https://assets.calendly.com/assets/external/widget.js" type="text/javascript" async></script>
 		<script is:inline define:vars={{ calendlyUrl, badgeText }}>
 			window.addEventListener('load', function initCalendlyBadge() {
